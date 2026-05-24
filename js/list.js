@@ -1,5 +1,9 @@
 import { UNIT_LABELS } from "./constants.js";
-import { getAllFoodItems, sortFoodItemsByName } from "./db.js";
+import {
+  deleteFoodItem,
+  getAllFoodItems,
+  sortFoodItemsByName,
+} from "./db.js";
 
 const listEl = document.getElementById("food-list");
 const emptyEl = document.getElementById("empty-state");
@@ -64,11 +68,25 @@ function createListItem(item) {
   const li = document.createElement("li");
   li.className = "food-item";
 
+  const header = document.createElement("div");
+  header.className = "food-item__header";
+
   const nameEl = document.createElement("p");
   nameEl.className = "food-item__name";
   nameEl.textContent = item.name;
 
-  li.appendChild(nameEl);
+  const deleteBtn = document.createElement("button");
+  deleteBtn.type = "button";
+  deleteBtn.className = "food-item__delete";
+  deleteBtn.textContent = "削除";
+  deleteBtn.setAttribute("aria-label", `${item.name}を削除`);
+  deleteBtn.addEventListener("click", () => {
+    handleDelete(item);
+  });
+
+  header.appendChild(nameEl);
+  header.appendChild(deleteBtn);
+  li.appendChild(header);
 
   const meta = formatMeta(item);
   if (meta) {
@@ -79,6 +97,23 @@ function createListItem(item) {
   }
 
   return li;
+}
+
+/** @param {import("./db.js").FoodItem} item */
+async function handleDelete(item) {
+  const confirmed = window.confirm(
+    `「${item.name}」を削除しますか？\nこの操作は取り消せません。`,
+  );
+  if (!confirmed) {
+    return;
+  }
+
+  try {
+    await deleteFoodItem(item.id);
+    await loadAndRender();
+  } catch {
+    window.alert("削除できませんでした。もう一度お試しください。");
+  }
 }
 
 function showList() {

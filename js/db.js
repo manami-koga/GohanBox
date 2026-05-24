@@ -60,6 +60,29 @@ export async function saveFoodItem(item) {
   });
 }
 
+/** @param {string} id */
+export async function deleteFoodItem(id) {
+  const db = await openDatabase();
+
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(STORE_NAME, "readwrite");
+    const store = transaction.objectStore(STORE_NAME);
+    const request = store.delete(id);
+
+    request.onerror = () => {
+      reject(request.error ?? new Error("食材の削除に失敗しました"));
+    };
+
+    request.onsuccess = () => {
+      resolve();
+    };
+
+    transaction.oncomplete = () => {
+      db.close();
+    };
+  });
+}
+
 /** @returns {Promise<FoodItem[]>} */
 export async function getAllFoodItems() {
   const db = await openDatabase();
