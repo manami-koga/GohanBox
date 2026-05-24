@@ -9,6 +9,8 @@ import { DB_NAME, DB_VERSION, STORE_NAME } from "./constants.js";
  * @property {string | null} [bestBefore]
  * @property {string | null} [useBy]
  * @property {string | null} [storage]
+ * @property {string | null} [purchaseLocation]
+ * @property {number | null} [purchaseAmount]
  * @property {string | null} [memo]
  * @property {string} createdAt
  */
@@ -31,6 +33,29 @@ function openDatabase() {
 
     request.onsuccess = () => {
       resolve(request.result);
+    };
+  });
+}
+
+/** @param {FoodItem} item */
+export async function saveFoodItem(item) {
+  const db = await openDatabase();
+
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(STORE_NAME, "readwrite");
+    const store = transaction.objectStore(STORE_NAME);
+    const request = store.put(item);
+
+    request.onerror = () => {
+      reject(request.error ?? new Error("食材の保存に失敗しました"));
+    };
+
+    request.onsuccess = () => {
+      resolve();
+    };
+
+    transaction.oncomplete = () => {
+      db.close();
     };
   });
 }

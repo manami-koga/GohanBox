@@ -3,7 +3,7 @@
  * ブラウザのコンソールで import("./seed-demo.js").then(m => m.seedDemoFoodItems())
  * または index.html?seed=1 で自動投入（データが0件のときのみ）
  */
-import { DB_NAME, DB_VERSION, STORE_NAME } from "./constants.js";
+import { saveFoodItem } from "./db.js";
 
 /** @returns {Promise<void>} */
 export async function seedDemoFoodItems() {
@@ -16,6 +16,8 @@ export async function seedDemoFoodItems() {
       bestBefore: "2026-05-28",
       useBy: null,
       storage: "fridge",
+      purchaseLocation: "イオン",
+      purchaseAmount: 198,
       memo: null,
       createdAt: new Date().toISOString(),
     },
@@ -32,27 +34,7 @@ export async function seedDemoFoodItems() {
     },
   ];
 
-  await new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
-    request.onupgradeneeded = (event) => {
-      const db = /** @type {IDBOpenDBRequest} */ (event.target).result;
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        db.createObjectStore(STORE_NAME, { keyPath: "id" });
-      }
-    };
-    request.onsuccess = () => {
-      const db = request.result;
-      const tx = db.transaction(STORE_NAME, "readwrite");
-      const store = tx.objectStore(STORE_NAME);
-      for (const item of items) {
-        store.put(item);
-      }
-      tx.oncomplete = () => {
-        db.close();
-        resolve();
-      };
-      tx.onerror = () => reject(tx.error);
-    };
-    request.onerror = () => reject(request.error);
-  });
+  for (const item of items) {
+    await saveFoodItem(item);
+  }
 }

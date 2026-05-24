@@ -16,7 +16,10 @@
 
     <section id="empty-state" class="empty-state" hidden>
       <p class="empty-state__message">食材がまだありません</p>
-      <a class="empty-state__action" href="add.html">+ 最初の食材を追加</a>
+      <div class="empty-state__actions">
+        <button type="button" class="empty-state__action" id="empty-quick-add">かんたん追加</button>
+        <a class="empty-state__action empty-state__action--secondary" href="add.html">詳細を入力して追加</a>
+      </div>
     </section>
 
     <section id="error-state" class="error-state" hidden>
@@ -25,12 +28,61 @@
     </section>
   </main>
 
-  <a class="fab" href="add.html" aria-label="食材を追加">
+  <button type="button" class="fab" id="fab-open-modal" aria-label="食材をかんたん追加">
     <svg class="fab__icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
       <path fill="currentColor" d="M12 5c.55 0 1 .45 1 1v5h5c.55 0 1 .45 1 1s-.45 1-1 1h-5v5c0 .55-.45 1-1 1s-1-.45-1-1v-5H6c-.55 0-1-.45-1-1s.45-1 1-1h5V6c0-.55.45-1 1-1z"/>
     </svg>
-  </a>
+  </button>
 
+  <div id="quick-add-modal" class="modal" hidden>
+    <div id="modal-backdrop" class="modal__backdrop"></div>
+    <div
+      class="modal__dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
+      <div class="modal__header">
+        <h2 id="modal-title" class="modal__title">食材を追加（かんたん）</h2>
+        <button type="button" id="modal-close" class="modal__close" aria-label="閉じる">×</button>
+      </div>
+
+      <form id="quick-add-form" class="form form--modal" novalidate>
+        <p id="quick-form-error" class="form-banner" role="alert" hidden></p>
+
+        <div class="field">
+          <label class="field__label" for="quick-name">食材名 <span class="field__required">*</span></label>
+          <input class="field__input" type="text" id="quick-name" maxlength="100" autocomplete="off" required>
+        </div>
+
+        <fieldset class="field field--fieldset">
+          <legend class="field__label">期限の種類（任意）</legend>
+          <div class="field__radios">
+            <label class="field__radio">
+              <input type="radio" name="expiry-type" value="bestBefore" checked>
+              賞味期限
+            </label>
+            <label class="field__radio">
+              <input type="radio" name="expiry-type" value="useBy">
+              消費期限
+            </label>
+          </div>
+        </fieldset>
+
+        <div class="field">
+          <label class="field__label" for="quick-expiry-date">期限</label>
+          <input class="field__input" type="date" id="quick-expiry-date">
+        </div>
+
+        <div class="form__actions form__actions--modal">
+          <button type="submit" class="form__submit">保存</button>
+          <a id="quick-detail-link" class="form__link" href="add.html">詳細を入力して追加</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="js/quick-add.js"></script>
   <script type="module" src="js/list.js"></script>
 </body>
 </html>

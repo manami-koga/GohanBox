@@ -46,6 +46,16 @@ function formatMeta(item) {
     parts.push(`消費 ${useBy}`);
   }
 
+  if (item.purchaseLocation) {
+    parts.push(`購入 ${item.purchaseLocation}`);
+  }
+
+  if (item.purchaseAmount != null && item.purchaseAmount >= 0) {
+    parts.push(
+      `¥${item.purchaseAmount.toLocaleString("ja-JP")}`,
+    );
+  }
+
   return parts.join(" · ");
 }
 
