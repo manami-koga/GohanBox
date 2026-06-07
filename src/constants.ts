@@ -1,5 +1,4 @@
-/** @type {Record<string, string>} */
-export const UNIT_LABELS = {
+export const UNIT_LABELS: Record<string, string> = {
   ml: "ml",
   l: "L",
   g: "g",
@@ -10,8 +9,7 @@ export const UNIT_LABELS = {
   bag: "袋",
 };
 
-/** @type {Record<string, string>} */
-export const STORAGE_LABELS = {
+export const STORAGE_LABELS: Record<string, string> = {
   fridge: "冷蔵",
   freezer: "冷凍",
   vegetable: "野菜室",

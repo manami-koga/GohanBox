@@ -2,10 +2,10 @@
 
 | 項目 | 内容 |
 |------|------|
-| 版 | v0.5 |
+| 版 | v0.6 |
 | 最終更新 | 2026-05-24 |
 | 参照 | [要件定義書](./requirements.md) |
-| ステータス | Phase B（期限必須化）仕様を追記 |
+| ステータス | フロントを React + TypeScript に移行 |
 
 ---
 
@@ -23,14 +23,25 @@
   └─ Phase B: クラウドDB（Supabase 等）※端末間同期・ログインなし方式
 ```
 
-### 1.2 技術選定（案・未確定）
+### 1.2 技術選定
 
-| レイヤ | 初版（Phase A）案 | Phase B 案 |
-|--------|-------------------|------------|
-| フロント | HTML + CSS + JavaScript、または Vite + React | 同左 |
+| レイヤ | Phase A（現行） | Phase B 案 |
+|--------|-----------------|------------|
+| フロント | **Vite + React + TypeScript**、React Router | 同左 |
 | 保存 | IndexedDB | Supabase（無料枠）等 |
 | 同期 | なし | 世帯ID + 共有コード（ログインなし）など |
-| 公開 | ローカル確認 → Vercel / Netlify | 同左 |
+| 公開 | `npm run dev` / `npm run build` → Vercel / Netlify | 同左 |
+
+#### ソース構成（`src/`）
+
+| パス | 役割 |
+|------|------|
+| `pages/ListPage.tsx` | S-01 食材一覧 |
+| `pages/AddPage.tsx` | S-02 詳細追加（`/add`） |
+| `components/QuickAddModal.tsx` | S-01-M かんたん追加 |
+| `components/EditModal.tsx` | 食材編集モーダル |
+| `lib/db.ts` | IndexedDB |
+| `lib/validate.ts` / `lib/foodForm.ts` | バリデーション |
 
 ---
 
@@ -41,11 +52,11 @@
 | 対象データ | **食材（FoodItem）のみ** |
 | 画面 | 一覧（S-01）、簡易追加モーダル（S-01-M）、詳細追加（S-02） |
 | 一覧の並び | **食材名のあいうえお順（昇順）** |
-| FAB の動作 | **モーダルを開く**（`add.html` へは遷移しない） |
+| FAB の動作 | **モーダルを開く**（`/add` へは遷移しない） |
 | 単位入力 | 詳細追加のみ・**セレクトボックス**（プリセット） |
 | 保存 | **IndexedDB**（単一端末） |
-| 実装状況 | S-01 済 / S-01-M・S-02 は未実装（FAB は暫定で `add.html` リンク） |
-| 含まない | 並び替えUI、編集・削除、同期、レシピ、買い物、ログイン |
+| 実装状況 | S-01・S-01-M・S-02・編集・削除 実装済（React） |
+| 含まない | 並び替えUI、同期、レシピ、買い物、ログイン |
 
 ---
 
@@ -378,3 +389,4 @@ function hasRequiredExpiry(bestBefore, useBy) {
 | v0.3 | 2026-05-24 | Q7〜Q9・Q11 反映。名前順・単位選択・Phase B 同期 |
 | v0.4 | 2026-05-24 | FAB→簡易モーダル、詳細追加画面の2系統を定義 |
 | v0.5 | 2026-05-24 | Phase B：登録時の期限（賞味 or 消費）必須化を追記 |
+| v0.6 | 2026-05-24 | フロントを Vite + React + TypeScript に移行 |

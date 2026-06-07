@@ -1,12 +1,6 @@
-/**
- * 開発用: 一覧の表示確認用サンプルデータ
- * ブラウザのコンソールで import("./seed-demo.js").then(m => m.seedDemoFoodItems())
- * または index.html?seed=1 で自動投入（データが0件のときのみ）
- */
-import { saveFoodItem } from "./db.js";
+import { saveFoodItem } from "./db";
 
-/** @returns {Promise<void>} */
-export async function seedDemoFoodItems() {
+export async function seedDemoFoodItems(): Promise<void> {
   const items = [
     {
       id: crypto.randomUUID(),
@@ -29,6 +23,8 @@ export async function seedDemoFoodItems() {
       bestBefore: null,
       useBy: "2026-05-30",
       storage: "vegetable",
+      purchaseLocation: null,
+      purchaseAmount: null,
       memo: null,
       createdAt: new Date().toISOString(),
     },

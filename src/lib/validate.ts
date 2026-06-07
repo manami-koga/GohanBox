@@ -1,5 +1,6 @@
-/** @param {string} value */
-export function validateName(value) {
+import type { ValidationResult } from "../types/food";
+
+export function validateName(value: string): ValidationResult<string> {
   const trimmed = value.trim();
   if (!trimmed) {
     return { ok: false, message: "食材名を入力してください" };
@@ -10,8 +11,9 @@ export function validateName(value) {
   return { ok: true, value: trimmed };
 }
 
-/** @param {string} value */
-export function validateQuantity(value) {
+export function validateQuantity(
+  value: string,
+): ValidationResult<number | null> {
   if (!value.trim()) {
     return { ok: true, value: null };
   }
@@ -22,8 +24,7 @@ export function validateQuantity(value) {
   return { ok: true, value: num };
 }
 
-/** @param {string} value */
-export function validateDate(value) {
+export function validateDate(value: string): ValidationResult<string | null> {
   if (!value) {
     return { ok: true, value: null };
   }
@@ -34,8 +35,9 @@ export function validateDate(value) {
   return { ok: true, value };
 }
 
-/** @param {string} value */
-export function validatePurchaseAmount(value) {
+export function validatePurchaseAmount(
+  value: string,
+): ValidationResult<number | null> {
   if (!value.trim()) {
     return { ok: true, value: null };
   }
@@ -52,8 +54,9 @@ export function validatePurchaseAmount(value) {
   return { ok: true, value: num };
 }
 
-/** @param {string} value */
-export function validatePurchaseLocation(value) {
+export function validatePurchaseLocation(
+  value: string,
+): ValidationResult<string | null> {
   const trimmed = value.trim();
   if (!trimmed) {
     return { ok: true, value: null };
@@ -65,18 +68,4 @@ export function validatePurchaseLocation(value) {
     };
   }
   return { ok: true, value: trimmed };
-}
-
-/** @param {string | null} bestBefore @param {string | null} useBy */
-export function validateDateOrder(bestBefore, useBy) {
-  if (!bestBefore || !useBy) {
-    return { ok: true };
-  }
-  if (useBy < bestBefore) {
-    return {
-      ok: false,
-      message: "消費期限は賞味期限以降の日付を指定してください",
-    };
-  }
-  return { ok: true };
 }

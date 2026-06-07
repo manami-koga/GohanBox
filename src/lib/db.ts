@@ -1,22 +1,7 @@
-import { DB_NAME, DB_VERSION, STORE_NAME } from "./constants.js";
+import { DB_NAME, DB_VERSION, STORE_NAME } from "../constants";
+import type { FoodItem } from "../types/food";
 
-/**
- * @typedef {Object} FoodItem
- * @property {string} id
- * @property {string} name
- * @property {number | null} [quantity]
- * @property {string | null} [unit]
- * @property {string | null} [bestBefore]
- * @property {string | null} [useBy]
- * @property {string | null} [storage]
- * @property {string | null} [purchaseLocation]
- * @property {number | null} [purchaseAmount]
- * @property {string | null} [memo]
- * @property {string} createdAt
- */
-
-/** @returns {Promise<IDBDatabase>} */
-function openDatabase() {
+function openDatabase(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
 
@@ -25,7 +10,7 @@ function openDatabase() {
     };
 
     request.onupgradeneeded = (event) => {
-      const db = /** @type {IDBOpenDBRequest} */ (event.target).result;
+      const db = (event.target as IDBOpenDBRequest).result;
       if (!db.objectStoreNames.contains(STORE_NAME)) {
         db.createObjectStore(STORE_NAME, { keyPath: "id" });
       }
@@ -37,8 +22,7 @@ function openDatabase() {
   });
 }
 
-/** @param {FoodItem} item */
-export async function saveFoodItem(item) {
+export async function saveFoodItem(item: FoodItem): Promise<void> {
   const db = await openDatabase();
 
   return new Promise((resolve, reject) => {
@@ -60,8 +44,7 @@ export async function saveFoodItem(item) {
   });
 }
 
-/** @param {string} id */
-export async function deleteFoodItem(id) {
+export async function deleteFoodItem(id: string): Promise<void> {
   const db = await openDatabase();
 
   return new Promise((resolve, reject) => {
@@ -83,8 +66,7 @@ export async function deleteFoodItem(id) {
   });
 }
 
-/** @returns {Promise<FoodItem[]>} */
-export async function getAllFoodItems() {
+export async function getAllFoodItems(): Promise<FoodItem[]> {
   const db = await openDatabase();
 
   return new Promise((resolve, reject) => {
@@ -97,7 +79,7 @@ export async function getAllFoodItems() {
     };
 
     request.onsuccess = () => {
-      resolve(/** @type {FoodItem[]} */ (request.result ?? []));
+      resolve((request.result as FoodItem[]) ?? []);
     };
 
     transaction.oncomplete = () => {
@@ -106,8 +88,7 @@ export async function getAllFoodItems() {
   });
 }
 
-/** @param {FoodItem[]} items */
-export function sortFoodItemsByName(items) {
+export function sortFoodItemsByName(items: FoodItem[]): FoodItem[] {
   return [...items].sort((a, b) => {
     const byName = a.name.localeCompare(b.name, "ja");
     if (byName !== 0) {
